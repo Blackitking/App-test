@@ -22,14 +22,13 @@ jobs:
           java-version: '17'
 
       - name: Create Android Project
+        shell: bash
         run: |
+
           mkdir -p app/src/main/java/com/xoshnaw/drivingtest
           mkdir -p app/src/main/res/drawable
-          mkdir -p app/src/main/res/mipmap-hdpi
-          mkdir -p app/src/main/res/mipmap-mdpi
-          mkdir -p app/src/main/res/mipmap-xhdpi
-          mkdir -p app/src/main/res/mipmap-xxhdpi
-          mkdir -p app/src/main/res/mipmap-xxxhdpi
+          mkdir -p app/src/main/res/drawable-v26
+          mkdir -p app/src/main/res/values
 
           cat > settings.gradle <<'EOF'
           pluginManagement {
@@ -76,12 +75,20 @@ jobs:
                   applicationId 'com.xoshnaw.drivingtest'
                   minSdk 23
                   targetSdk 35
-                  versionCode 1
-                  versionName '1.0'
+                  versionCode 3
+                  versionName '3.0'
               }
           }
           EOF
 
+          cat > app/src/main/res/values/colors.xml <<'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="icon_background">#0757C9</color>
+          </resources>
+          EOF
+
+          # ئایکۆنی کۆن بۆ Android ـی کۆن
           cat > app/src/main/res/drawable/app_icon.xml <<'EOF'
           <vector xmlns:android="http://schemas.android.com/apk/res/android"
               android:width="108dp"
@@ -90,26 +97,71 @@ jobs:
               android:viewportHeight="108">
 
               <path
-                  android:fillColor="#0066CC"
+                  android:fillColor="#0757C9"
                   android:pathData="M0,0 L108,0 L108,108 L0,108 Z"/>
+
+              <circle
+                  android:fillColor="#FFFFFF"
+                  android:strokeColor="#00D9FF"
+                  android:strokeWidth="5"
+                  android:cx="54"
+                  android:cy="54"
+                  android:radius="29"/>
+
+              <circle
+                  android:fillColor="#0757C9"
+                  android:cx="54"
+                  android:cy="54"
+                  android:radius="20"/>
 
               <path
                   android:fillColor="#FFFFFF"
-                  android:pathData="M20,62 L27,44 Q29,38 36,38 L72,38 Q79,38 81,44 L88,62 L88,76 Q88,81 83,81 L76,81 Q71,81 71,76 L71,73 L37,73 L37,76 Q37,81 32,81 L25,81 Q20,81 20,76 Z"/>
-
-              <path
-                  android:fillColor="#0066CC"
-                  android:pathData="M31,46 L77,46 L81,59 L27,59 Z"/>
-
-              <path
-                  android:fillColor="#0066CC"
-                  android:pathData="M28,64 L36,64 L36,70 L28,70 ZM72,64 L80,64 L80,70 L72,70 Z"/>
+                  android:pathData="M54,31 L58,48 L75,54 L58,60 L54,77 L50,60 L33,54 L50,48 Z"/>
 
               <path
                   android:fillColor="#00D9FF"
-                  android:pathData="M43,64 L65,64 L65,70 L43,70 Z"/>
+                  android:pathData="M54,38 L57,51 L70,54 L57,57 L54,70 L51,57 L38,54 L51,51 Z"/>
 
           </vector>
+          EOF
+
+          # پێشەوەی Adaptive Icon
+          cat > app/src/main/res/drawable/app_icon_foreground.xml <<'EOF'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp"
+              android:height="108dp"
+              android:viewportWidth="108"
+              android:viewportHeight="108">
+
+              <circle
+                  android:fillColor="#FFFFFF"
+                  android:cx="54"
+                  android:cy="54"
+                  android:radius="29"/>
+
+              <circle
+                  android:fillColor="#0757C9"
+                  android:cx="54"
+                  android:cy="54"
+                  android:radius="20"/>
+
+              <path
+                  android:fillColor="#FFFFFF"
+                  android:pathData="M54,31 L58,48 L75,54 L58,60 L54,77 L50,60 L33,54 L50,48 Z"/>
+
+              <path
+                  android:fillColor="#00D9FF"
+                  android:pathData="M54,38 L57,51 L70,54 L57,57 L54,70 L51,57 L38,54 L51,51 Z"/>
+
+          </vector>
+          EOF
+
+          # Adaptive Icon بۆ Android 8+
+          cat > app/src/main/res/drawable-v26/app_icon.xml <<'EOF'
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@color/icon_background"/>
+              <foreground android:drawable="@drawable/app_icon_foreground"/>
+          </adaptive-icon>
           EOF
 
           cat > app/src/main/AndroidManifest.xml <<'EOF'
@@ -169,8 +221,6 @@ jobs:
                   settings.setDatabaseEnabled(true);
                   settings.setAllowFileAccess(true);
                   settings.setAllowContentAccess(true);
-                  settings.setBuiltInZoomControls(false);
-                  settings.setDisplayZoomControls(false);
 
                   webView.setWebViewClient(new WebViewClient());
 
@@ -200,7 +250,7 @@ jobs:
       - name: Build APK
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew clean assembleDebug
 
       - name: Check APK
         run: |
@@ -210,6 +260,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Driving-Theory-APK
+          name: Driving-Theory-APK-v3
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
