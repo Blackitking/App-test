@@ -14,13 +14,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup JDK
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Create Android project
+      - name: Create Android Project
+        shell: bash
         run: |
           mkdir -p app/src/main/java/com/xoshnaw/drivingtest
           mkdir -p app/src/main/res/values
@@ -69,16 +70,12 @@ jobs:
                   versionName "1.0"
               }
           }
-
-          dependencies {
-              implementation 'androidx.appcompat:appcompat:1.7.0'
-          }
           EOF
 
           cat > app/src/main/res/values/styles.xml <<'EOF'
           <?xml version="1.0" encoding="utf-8"?>
           <resources>
-              <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+              <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
                   <item name="android:fontFamily">sans</item>
                   <item name="android:colorAccent">#0066CC</item>
                   <item name="android:statusBarColor">#0066CC</item>
@@ -109,6 +106,7 @@ jobs:
                       </intent-filter>
 
                   </activity>
+
               </application>
           </manifest>
           EOF
@@ -158,10 +156,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.10'
+          gradle-version: '8.9'
 
       - name: Build APK
-        run: gradle assembleDebug
+        run: gradle assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
