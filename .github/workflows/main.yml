@@ -25,6 +25,37 @@ jobs:
         run: |
           mkdir -p app/src/main/java/com/xoshnaw/drivingtest
           mkdir -p app/src/main/res/values
+          mkdir -p app/src/main/res/drawable
+
+          # دروستکردنی ئایکۆن بە شێوەی SVG
+          cat > app/src/main/res/drawable/app_icon.xml <<'EOF'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp"
+              android:height="108dp"
+              android:viewportWidth="108"
+              android:viewportHeight="108">
+
+              <path
+                  android:fillColor="#0066CC"
+                  android:pathData="M0,0 L108,0 L108,108 L0,108 Z"/>
+
+              <path
+                  android:fillColor="#FFFFFF"
+                  android:pathData="M20,62 L27,44 Q29,38 36,38 L72,38 Q79,38 81,44 L88,62 L88,76 Q88,81 83,81 L76,81 Q71,81 71,76 L71,73 L37,73 L37,76 Q37,81 32,81 L25,81 Q20,81 20,76 Z"/>
+
+              <path
+                  android:fillColor="#0066CC"
+                  android:pathData="M31,46 L77,46 L81,59 L27,59 Z"/>
+
+              <path
+                  android:fillColor="#FFFFFF"
+                  android:pathData="M28,64 L36,64 L36,70 L28,70 ZM72,64 L80,64 L80,70 L72,70 Z"/>
+
+              <path
+                  android:fillColor="#00D9FF"
+                  android:pathData="M43,64 L65,64 L65,70 L43,70 Z"/>
+          </vector>
+          EOF
 
           cat > settings.gradle <<'EOF'
           pluginManagement {
@@ -66,8 +97,8 @@ jobs:
                   applicationId "com.xoshnaw.drivingtest"
                   minSdk 23
                   targetSdk 35
-                  versionCode 1
-                  versionName "1.0"
+                  versionCode 2
+                  versionName "2.0"
               }
           }
           EOF
@@ -93,6 +124,8 @@ jobs:
               <application
                   android:theme="@style/AppTheme"
                   android:label="تاقی کردنەوەی تیۆری مۆڵەتی شوفێری"
+                  android:icon="@drawable/app_icon"
+                  android:roundIcon="@drawable/app_icon"
                   android:usesCleartextTraffic="false">
 
                   <activity
@@ -106,7 +139,6 @@ jobs:
                       </intent-filter>
 
                   </activity>
-
               </application>
           </manifest>
           EOF
@@ -134,6 +166,7 @@ jobs:
                   WebSettings settings = webView.getSettings();
                   settings.setJavaScriptEnabled(true);
                   settings.setDomStorageEnabled(true);
+                  settings.setAllowFileAccess(true);
 
                   webView.setWebViewClient(new WebViewClient());
 
@@ -159,10 +192,9 @@ jobs:
           gradle-version: '8.9'
 
       - name: Build APK
-        run: gradle assembleDebug --stacktrace
+        run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Driving-Theory-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: Driving
