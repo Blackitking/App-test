@@ -17,6 +17,10 @@
   --border: #e0e0e0;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Noto Sans Arabic', sans-serif;
   background: linear-gradient(135deg, #eef2f3 0%, #dfe6e9 100%);
@@ -39,4 +43,124 @@ body {
 header {
   background: var(--primary);
   color: white;
-  padding:
+  padding: 25px 20px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+main {
+  padding: 25px;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: var(--card-bg);
+}
+
+.card h2 {
+  margin-top: 0;
+  color: var(--primary);
+}
+
+.info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.info-box {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  background: var(--bg);
+}
+
+.info-box strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--primary);
+}
+
+footer {
+  text-align: center;
+  padding: 18px;
+  background: var(--primary);
+  color: white;
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  header h1 {
+    font-size: 22px;
+  }
+
+  main {
+    padding: 15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>دانیشتوانی کوردستان و ئێراق</h1>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>بەخێربێیت</h2>
+      <p>
+        ئەم پەڕەیە بۆ نیشاندانی زانیاریی گشتی لەبارەی دانیشتوانی
+        کوردستان و ئێراق دروستکراوە.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>زانیاریی گشتی</h2>
+
+      <div class="info">
+        <div class="info-box">
+          <strong>ناوچە</strong>
+          کوردستان و ئێراق
+        </div>
+
+        <div class="info-box">
+          <strong>زمان</strong>
+          کوردی
+        </div>
+
+        <div class="info-box">
+          <strong>جۆری زانیاری</strong>
+          زانیاریی گشتی
+        </div>
+
+        <div class="info-box">
+          <strong>دۆخ</strong>
+          چالاک
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 دانیشتوانی کوردستان و ئێراق
+  </footer>
+
+</div>
+
+</body>
+</html>
