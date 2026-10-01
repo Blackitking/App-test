@@ -3,164 +3,121 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دانیشتوانی کوردستان و ئێراق</title>
-
+<title>چاوی دەوڵەت - DEMO</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
-
-:root {
-  --primary: #2c3e50;
-  --accent: #c0392b;
-  --bg: #f4f6f7;
-  --card-bg: #ffffff;
-  --text: #34495e;
-  --border: #e0e0e0;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Noto Sans Arabic', sans-serif;
-  background: linear-gradient(135deg, #eef2f3 0%, #dfe6e9 100%);
-  color: var(--text);
-  margin: 0;
-  padding: 20px;
-  min-height: 100vh;
-}
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  overflow: hidden;
-  border-top: 6px solid var(--accent);
-}
-
-header {
-  background: var(--primary);
-  color: white;
-  padding: 25px 20px;
-  text-align: center;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 28px;
-}
-
-main {
-  padding: 25px;
-}
-
-.card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  background: var(--card-bg);
-}
-
-.card h2 {
-  margin-top: 0;
-  color: var(--primary);
-}
-
-.info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
-}
-
-.info-box {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
-  background: var(--bg);
-}
-
-.info-box strong {
-  display: block;
-  margin-bottom: 5px;
-  color: var(--primary);
-}
-
-footer {
-  text-align: center;
-  padding: 18px;
-  background: var(--primary);
-  color: white;
-  font-size: 14px;
-}
-
-@media (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  header h1 {
-    font-size: 22px;
-  }
-
-  main {
-    padding: 15px;
-  }
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&display=swap');
+*{box-sizing:border-box}
+body{margin:0;padding:16px;font-family:'Noto Sans Arabic',sans-serif;background:linear-gradient(135deg,#eef2f3,#dfe6e9);color:#34495e}
+.container{max-width:900px;margin:auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.12);border-top:6px solid #c0392b}
+header{background:#2c3e50;color:#fff;padding:24px;text-align:center}
+header h1{margin:0;font-size:28px}
+.badge{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:20px;background:#c0392b;color:#fff;font-size:13px}
+main{padding:20px}
+.search{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+input{flex:1;min-width:180px;padding:13px;border:1px solid #ddd;border-radius:10px;font-size:16px}
+button{border:0;border-radius:10px;padding:12px 18px;font-family:inherit;font-size:15px;cursor:pointer}
+.primary{background:#2c3e50;color:#fff}
+.secondary{background:#c0392b;color:#fff}
+button:active{transform:scale(.98)}
+.status{padding:12px;border-radius:10px;background:#f4f6f7;margin-bottom:18px;display:none}
+.profile{display:none;border:1px solid #e0e0e0;border-radius:14px;padding:18px}
+.profile-top{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.photo{width:110px;height:135px;border-radius:10px;background:linear-gradient(135deg,#777,#aaa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;filter:blur(4px)}
+.name{font-size:22px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:18px}
+.item{padding:12px;border:1px solid #e0e0e0;border-radius:10px;background:#f8f9fa}
+.item b{display:block;color:#2c3e50;margin-bottom:4px}
+.hidden-data{filter:blur(5px);user-select:none}
+.notice{margin-top:18px;padding:12px;border-radius:10px;background:#fff3f3;color:#8b2b2b;font-size:13px}
+footer{text-align:center;background:#2c3e50;color:#fff;padding:16px}
+.logo{font-weight:700;font-size:18px;color:#5dade2}
+@media(max-width:600px){body{padding:8px}main{padding:14px}.photo{width:90px;height:110px}}
 </style>
 </head>
-
 <body>
-
 <div class="container">
+<header>
+  <div class="logo">چاوی دەوڵەت</div>
+  <h1>سیستەمی زانیاری — DEMO</h1>
+  <div class="badge">FICTIONAL / DEMO</div>
+</header>
 
-  <header>
-    <h1>دانیشتوانی کوردستان و ئێراق</h1>
-  </header>
+<main>
+  <div class="search">
+    <input id="searchInput" type="text" placeholder="ناوی نموونەیی بنووسە...">
+    <button class="primary" onclick="searchPerson()">گەڕان</button>
+    <button class="secondary" onclick="clearResult()">سڕینەوە</button>
+  </div>
 
-  <main>
-    <div class="card">
-      <h2>بەخێربێیت</h2>
-      <p>
-        ئەم پەڕەیە بۆ نیشاندانی زانیاریی گشتی لەبارەی دانیشتوانی
-        کوردستان و ئێراق دروستکراوە.
-      </p>
-    </div>
+  <div id="status" class="status"></div>
 
-    <div class="card">
-      <h2>زانیاریی گشتی</h2>
-
-      <div class="info">
-        <div class="info-box">
-          <strong>ناوچە</strong>
-          کوردستان و ئێراق
-        </div>
-
-        <div class="info-box">
-          <strong>زمان</strong>
-          کوردی
-        </div>
-
-        <div class="info-box">
-          <strong>جۆری زانیاری</strong>
-          زانیاریی گشتی
-        </div>
-
-        <div class="info-box">
-          <strong>دۆخ</strong>
-          چالاک
-        </div>
+  <section id="profile" class="profile">
+    <div class="profile-top">
+      <div class="photo">وێنەی Blur کراو</div>
+      <div>
+        <div class="name" id="personName"></div>
+        <div>ناسنامە: <span class="hidden-data" id="personId"></span></div>
       </div>
     </div>
-  </main>
 
-  <footer>
-    © 2026 دانیشتوانی کوردستان و ئێراق
-  </footer>
+    <div class="grid">
+      <div class="item"><b>تەمەن</b><span id="age"></span></div>
+      <div class="item"><b>شار</b><span id="city"></span></div>
+      <div class="item"><b>پیشە</b><span id="job"></span></div>
+      <div class="item"><b>دۆخی گشتی</b><span id="state"></span></div>
+    </div>
 
+    <div class="notice">
+      ئەم زانیارییەکانە هەموویان ساختەن و تەنها بۆ پیشاندانی دیزاین و Demo ـن.
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div>cyber drangonz is number one</div>
+</footer>
 </div>
 
+<script>
+const demoPeople = [
+  {name:"ئازاد نموونە",id:"DEMO-001",age:"٢٤ ساڵ",city:"هەولێر",job:"خوێندکار",state:"تاقیکردنەوەی سیستەم"},
+  {name:"سوران نموونە",id:"DEMO-002",age:"٣١ ساڵ",city:"کۆیە",job:"مامۆستا",state:"تاقیکردنەوەی سیستەم"},
+  {name:"دڵشاد نموونە",id:"DEMO-003",age:"٢٨ ساڵ",city:"سلێمانی",job:"تەکنەلۆجی",state:"تاقیکردنەوەی سیستەم"}
+];
+
+function searchPerson(){
+  const q=document.getElementById("searchInput").value.trim();
+  const status=document.getElementById("status");
+  const profile=document.getElementById("profile");
+  if(!q){
+    status.style.display="block";
+    status.textContent="تکایە ناوی نموونەیی بنووسە.";
+    profile.style.display="none";
+    return;
+  }
+  const person=demoPeople.find(p=>p.name.includes(q));
+  if(!person){
+    status.style.display="block";
+    status.textContent="هیچ داتای Demo ـێک بەو ناوە نەدۆزرایەوە.";
+    profile.style.display="none";
+    return;
+  }
+  status.style.display="block";
+  status.textContent="داتای Demo دۆزرایەوە.";
+  document.getElementById("personName").textContent=person.name;
+  document.getElementById("personId").textContent=person.id;
+  document.getElementById("age").textContent=person.age;
+  document.getElementById("city").textContent=person.city;
+  document.getElementById("job").textContent=person.job;
+  document.getElementById("state").textContent=person.state;
+  profile.style.display="block";
+}
+
+function clearResult(){
+  document.getElementById("searchInput").value="";
+  document.getElementById("status").style.display="none";
+  document.getElementById("profile").style.display="none";
+}
+</script>
 </body>
 </html>
