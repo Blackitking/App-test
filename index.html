@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>سیستەمی گەڕانی ناو</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
@@ -35,7 +37,8 @@ h1, h2 {
     margin-top: 0;
 }
 
-input, button {
+input,
+button {
     width: 100%;
     padding: 13px;
     margin: 7px 0;
@@ -55,6 +58,14 @@ button:hover {
     background: #1d4ed8;
 }
 
+.admin-button {
+    background: #111827;
+}
+
+.admin-button:hover {
+    background: #000;
+}
+
 .delete {
     background: #dc2626;
 }
@@ -71,6 +82,10 @@ button:hover {
     background: #d97706;
 }
 
+.logout {
+    background: #6b7280;
+}
+
 .hidden {
     display: none;
 }
@@ -80,7 +95,8 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     padding: 12px;
     border-bottom: 1px solid #e5e7eb;
     text-align: center;
@@ -97,6 +113,11 @@ th {
 
 .actions button {
     margin: 0;
+}
+
+.count {
+    margin-top: 10px;
+    color: #475569;
 }
 
 .message {
@@ -116,67 +137,154 @@ th {
     color: #991b1b;
 }
 
-.count {
-    margin-top: 10px;
-    color: #475569;
-}
-
 @media(max-width:600px) {
 
     .actions {
         flex-direction: column;
     }
 
-    th, td {
+    th,
+    td {
         padding: 8px 4px;
         font-size: 13px;
     }
 
 }
+
 </style>
 </head>
+
 
 <body>
 
 <div class="container">
 
-<!-- LOGIN -->
-<div id="loginBox" class="card">
 
-    <h1>🔐 چوونەژوورەوە</h1>
+<!-- =========================
+     PUBLIC SEARCH
+========================= -->
 
-    <input
-        type="password"
-        id="password"
-        placeholder="وشەی نهێنی"
-    >
+<div id="publicPage">
 
-    <button onclick="login()">
-        چوونەژوورەوە
-    </button>
+    <div class="card">
 
-    <div id="loginError" class="message error">
-        وشەی نهێنی هەڵەیە
+        <h1>🔎 گەڕانی ناو</h1>
+
+        <input
+            type="text"
+            id="search"
+            placeholder="دوو یان سێ وشەی ناو بنووسە..."
+            oninput="showResults()"
+        >
+
+        <div class="count" id="count"></div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>📋 ئەنجامەکان</h2>
+
+        <div style="overflow-x:auto;">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>#</th>
+                        <th>ناو</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="publicTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- تەنها ئەم دوگمەیە Admin ـە -->
+
+    <div class="card">
+
+        <button
+            class="admin-button"
+            onclick="openAdminLogin()"
+        >
+            🔐 Admin Panel
+        </button>
+
     </div>
 
 </div>
 
 
-<!-- ADMIN -->
+
+<!-- =========================
+     ADMIN LOGIN
+========================= -->
+
+<div id="loginPage" class="card hidden">
+
+    <h1>🔐 چوونەژوورەوەی Admin</h1>
+
+    <input
+        type="password"
+        id="adminPassword"
+        placeholder="کۆدی Admin بنووسە"
+    >
+
+    <button onclick="adminLogin()">
+        چوونەژوورەوە
+    </button>
+
+    <button
+        class="logout"
+        onclick="closeAdminLogin()"
+    >
+        گەڕانەوە
+    </button>
+
+    <div
+        id="loginError"
+        class="message error"
+    >
+        کۆدی Admin هەڵەیە
+    </div>
+
+</div>
+
+
+
+<!-- =========================
+     ADMIN PANEL
+========================= -->
+
 <div id="adminPanel" class="hidden">
+
 
     <div class="card">
 
-        <h1>👤 پەنێڵی بەڕێوەبەر</h1>
+        <h1>👤 Admin Panel</h1>
 
-        <button onclick="logout()">
-            دەرچوون
+        <button
+            class="logout"
+            onclick="logoutAdmin()"
+        >
+            دەرچوون لە Admin
         </button>
 
     </div>
 
 
+
     <!-- ADD NAME -->
+
     <div class="card">
 
         <h2>➕ زیادکردنی ناو</h2>
@@ -188,51 +296,58 @@ th {
         >
 
         <button onclick="addPerson()">
-            زیادکردن
+            زیادکردنی ناو
         </button>
 
-        <div id="addMessage" class="message success">
+        <div
+            id="addMessage"
+            class="message success"
+        >
             ناوەکە بە سەرکەوتوویی زیادکرا
         </div>
 
     </div>
 
 
-    <!-- SEARCH -->
+
+    <!-- ADMIN SEARCH -->
+
     <div class="card">
 
-        <h2>🔎 گەڕان بە ناو</h2>
+        <h2>🔎 گەڕانی ناوەکان</h2>
 
         <input
             type="text"
-            id="search"
-            placeholder="دوو یان سێ وشەی ناو بنووسە..."
-            oninput="showPeople()"
+            id="adminSearch"
+            placeholder="بە ناو بگەڕێ..."
+            oninput="showAdminPeople()"
         >
-
-        <div class="count" id="count"></div>
 
     </div>
 
 
-    <!-- RESULTS -->
+
+    <!-- ADMIN TABLE -->
+
     <div class="card">
 
-        <h2>📋 ئەنجامەکان</h2>
+        <h2>📋 بەڕێوەبردنی ناوەکان</h2>
 
         <div style="overflow-x:auto;">
 
             <table>
 
                 <thead>
+
                     <tr>
                         <th>#</th>
                         <th>ناو</th>
                         <th>کردار</th>
                     </tr>
+
                 </thead>
 
-                <tbody id="peopleTable"></tbody>
+                <tbody id="adminTable"></tbody>
 
             </table>
 
@@ -242,48 +357,54 @@ th {
 
 </div>
 
+
 </div>
+
 
 
 <script>
 
+
 /* =========================
-   وشەی نهێنی
+   تەنها ئەدمین پاسۆردی هەیە
 ========================= */
 
 const ADMIN_PASSWORD = "5624";
 
 
+
 /* =========================
-   داتای سەرەتایی
+   داتا
 ========================= */
 
-let people = JSON.parse(
-    localStorage.getItem("peopleData")
-) || [
+let people =
+    JSON.parse(
+        localStorage.getItem("peopleData")
+    ) || [
 
-    { name: "ئەوین محمد امین" },
-    { name: "اسماعیل محمد" },
-    { name: "ژوان ستار محمد" },
-    { name: "احمد عولا ابراهیم" },
-    { name: "احمد عولا احمد" },
-    { name: "احمد جمیل بریندار" },
-    { name: "احمد جمیل حسین" },
-    { name: "اسماعیل رسول" },
-    { name: "اسماعیل رسول ئەحمەد" },
-    { name: "حسن علی" },
-    { name: "حسن علی احمد" },
-    { name: "حسن علی احمد" },
-    { name: "حسن علی احمد" },
-    { name: "حسن علی احمد" },
-    { name: "حسن علی احمد" },
-    { name: "حسن علی احمد" },
-    { name: "حسن علی اسماعیل" },
-    { name: "حسن علی بابیر" },
-    { name: "حسن علی تمر" },
-    { name: "حسن علی جمو" }
+        { name: "ئەوین محمد امین" },
+        { name: "اسماعیل محمد" },
+        { name: "ژوان ستار محمد" },
+        { name: "احمد عولا ابراهیم" },
+        { name: "احمد عولا احمد" },
+        { name: "احمد جمیل بریندار" },
+        { name: "احمد جمیل حسین" },
+        { name: "اسماعیل رسول" },
+        { name: "اسماعیل رسول ئەحمەد" },
+        { name: "حسن علی" },
+        { name: "حسن علی احمد" },
+        { name: "حسن علی احمد" },
+        { name: "حسن علی احمد" },
+        { name: "حسن علی احمد" },
+        { name: "حسن علی احمد" },
+        { name: "حسن علی احمد" },
+        { name: "حسن علی اسماعیل" },
+        { name: "حسن علی بابیر" },
+        { name: "حسن علی تمر" },
+        { name: "حسن علی جمو" }
 
-];
+    ];
+
 
 
 /* =========================
@@ -300,28 +421,146 @@ function saveData() {
 }
 
 
+
 /* =========================
-   LOGIN
+   گەڕانی گشتی
+   هیچ پاسۆردێک نییە
 ========================= */
 
-function login() {
+function showResults() {
+
+    const search =
+        document
+        .getElementById("search")
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const table =
+        document.getElementById("publicTable");
+
+
+    table.innerHTML = "";
+
+
+    const words =
+        search
+        .split(/\s+/)
+        .filter(word => word.length > 0);
+
+
+    const results =
+        people.filter(person => {
+
+            const name =
+                person.name.toLowerCase();
+
+            return words.every(word =>
+                name.includes(word)
+            );
+
+        });
+
+
+    results.forEach((person, index) => {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${index + 1}
+            </td>
+
+            <td>
+                ${escapeHTML(person.name)}
+            </td>
+
+        `;
+
+
+        table.appendChild(row);
+
+    });
+
+
+    document.getElementById("count").textContent =
+        "ژمارەی ئەنجامەکان: " + results.length;
+
+}
+
+
+
+/* =========================
+   کردنەوەی Admin Login
+========================= */
+
+function openAdminLogin() {
+
+    document
+        .getElementById("publicPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("loginPage")
+        .classList.remove("hidden");
+
+}
+
+
+
+/* =========================
+   داخستنی Admin Login
+========================= */
+
+function closeAdminLogin() {
+
+    document
+        .getElementById("loginPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("publicPage")
+        .classList.remove("hidden");
+
+}
+
+
+
+/* =========================
+   چوونەژوورەوەی Admin
+========================= */
+
+function adminLogin() {
 
     const password =
-        document.getElementById("password").value;
+        document
+        .getElementById("adminPassword")
+        .value;
+
 
     if (password === ADMIN_PASSWORD) {
 
         document
-            .getElementById("loginBox")
+            .getElementById("loginPage")
             .classList.add("hidden");
 
         document
             .getElementById("adminPanel")
             .classList.remove("hidden");
 
-        showPeople();
+        document
+            .getElementById("adminPassword")
+            .value = "";
 
-    } else {
+        showAdminPeople();
+
+    }
+
+    else {
 
         document
             .getElementById("loginError")
@@ -340,35 +579,40 @@ function login() {
 }
 
 
+
 /* =========================
-   LOGOUT
+   دەرچوون
 ========================= */
 
-function logout() {
+function logoutAdmin() {
 
     document
         .getElementById("adminPanel")
         .classList.add("hidden");
 
     document
-        .getElementById("loginBox")
+        .getElementById("publicPage")
         .classList.remove("hidden");
 
     document
-        .getElementById("password")
+        .getElementById("search")
         .value = "";
+
+    showResults();
 
 }
 
 
+
 /* =========================
-   زیادکردنی تەنها ناو
+   زیادکردنی ناو
 ========================= */
 
 function addPerson() {
 
     const input =
         document.getElementById("newName");
+
 
     const name =
         input.value.trim();
@@ -379,6 +623,7 @@ function addPerson() {
         alert("تکایە ناو بنووسە");
 
         return;
+
     }
 
 
@@ -407,66 +652,56 @@ function addPerson() {
     }, 2000);
 
 
-    showPeople();
+    showAdminPeople();
+
+    showResults();
 
 }
 
 
+
 /* =========================
-   گەڕان
+   پیشاندانی Admin
 ========================= */
 
-function showPeople() {
+function showAdminPeople() {
 
     const table =
-        document.getElementById("peopleTable");
+        document.getElementById("adminTable");
+
 
     const search =
         document
-            .getElementById("search")
-            .value
-            .trim()
-            .toLowerCase();
+        .getElementById("adminSearch")
+        .value
+        .trim()
+        .toLowerCase();
 
 
     table.innerHTML = "";
 
 
-    /*
-       بۆ نموونە:
-
-       حسن علی احمد
-
-       ئەگەر بەدوای:
-       حسن علی
-
-       بگەڕێیت،
-       هەموو ناوەکان کە
-       حسن و علی تێدایە دەردەکەون.
-    */
-
-    const words = search
+    const words =
+        search
         .split(/\s+/)
         .filter(word => word.length > 0);
 
 
-    const filtered = people.filter(person => {
+    people.forEach((person, index) => {
 
         const name =
             person.name.toLowerCase();
 
 
-        return words.every(word =>
-            name.includes(word)
-        );
+        const match =
+            words.every(word =>
+                name.includes(word)
+            );
 
-    });
 
-
-    filtered.forEach((person, index) => {
-
-        const originalIndex =
-            people.indexOf(person);
+        if (!match) {
+            return;
+        }
 
 
         const row =
@@ -489,14 +724,14 @@ function showPeople() {
 
                     <button
                         class="edit"
-                        onclick="editPerson(${originalIndex})"
+                        onclick="editPerson(${index})"
                     >
                         دەستکاری
                     </button>
 
                     <button
                         class="delete"
-                        onclick="deletePerson(${originalIndex})"
+                        onclick="deletePerson(${index})"
                     >
                         سڕینەوە
                     </button>
@@ -512,15 +747,12 @@ function showPeople() {
 
     });
 
-
-    document.getElementById("count").textContent =
-        "ژمارەی ئەنجامەکان: " + filtered.length;
-
 }
 
 
+
 /* =========================
-   دەستکاری
+   دەستکاری ناو
 ========================= */
 
 function editPerson(index) {
@@ -541,28 +773,32 @@ function editPerson(index) {
     }
 
 
-    const cleaned =
+    const cleanName =
         newName.trim();
 
 
-    if (!cleaned) {
+    if (!cleanName) {
 
         alert("ناو نابێت بەتاڵ بێت");
 
         return;
+
     }
 
 
     people[index] = {
-        name: cleaned
+        name: cleanName
     };
 
 
     saveData();
 
-    showPeople();
+    showAdminPeople();
+
+    showResults();
 
 }
+
 
 
 /* =========================
@@ -575,25 +811,29 @@ function deletePerson(index) {
         people[index];
 
 
-    const ok =
+    const confirmDelete =
         confirm(
             "دڵنیایت لە سڕینەوەی:\n\n" +
             person.name
         );
 
 
-    if (!ok) {
+    if (!confirmDelete) {
         return;
     }
 
 
     people.splice(index, 1);
 
+
     saveData();
 
-    showPeople();
+    showAdminPeople();
+
+    showResults();
 
 }
+
 
 
 /* =========================
@@ -612,29 +852,31 @@ function escapeHTML(text) {
 }
 
 
+
 /* =========================
-   ENTER بۆ LOGIN
+   Enter بۆ Admin Login
 ========================= */
 
 document
-    .getElementById("password")
+    .getElementById("adminPassword")
     .addEventListener(
         "keydown",
         function(event) {
 
             if (event.key === "Enter") {
-                login();
+                adminLogin();
             }
 
         }
     );
 
 
+
 /* =========================
    دەستپێکردن
 ========================= */
 
-showPeople();
+showResults();
 
 </script>
 
