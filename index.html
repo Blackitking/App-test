@@ -1,139 +1,137 @@
-<!doctype html>
-<html lang="ku" dir="rtl">
+<!DOCTYPE html>
+<html lang="ku">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>شەمعون AI</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#07162d,#123f68);color:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:16px}
-.app{width:min(540px,100%);background:#08172b;border:1px solid #294562;border-radius:25px;padding:22px;box-shadow:0 20px 60px #0008}
-.logo{width:92px;height:92px;border-radius:50%;margin:auto;display:grid;place-items:center;background:#168cff;font-size:48px;box-shadow:0 0 30px #168cff55}
-h1{text-align:center;margin:12px 0 2px;font-size:34px}.sub{text-align:center;color:#a9bfd7;margin-bottom:20px}
-button{width:100%;padding:16px;border:0;border-radius:16px;font-size:18px;font-weight:bold;background:#168cff;color:#fff}
-button:disabled{opacity:.5}.listen{background:#d83e5d!important}
-.status{text-align:center;min-height:28px;margin:14px 0;color:#bcd0e5}
-.box{background:#10243c;border-radius:15px;padding:13px;margin-top:10px;line-height:1.8}.label{font-size:13px;color:#8eabc7}
-#heard,#answer{white-space:pre-wrap;margin-top:5px;min-height:25px}
-input{width:100%;padding:13px;border-radius:12px;border:1px solid #36536f;background:#061222;color:#fff;margin-top:15px;direction:ltr}
-small{display:block;color:#91a8c0;line-height:1.7;margin-top:8px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>گەڕانی داتا</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #0d1117;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      direction: rtl;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px;
+      margin: 7px 0;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      background: #161b22;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 8px;
+      background: #238636;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 12px;
+    }
+  </style>
 </head>
+
 <body>
-<main class="app">
-<div class="logo">🤖</div>
-<h1>شەمعون</h1>
-<div class="sub">یاریدەدەری زیرەکی دەستکرد بە کوردیی سۆرانی</div>
 
-<button id="talk">🎙️ قسە لەگەڵ شەمعون بکە</button>
-<div id="status" class="status">ئامادەم. دوگمەکە دابگرە و قسە بکە.</div>
+<div class="container">
 
-<div class="box"><div class="label">قسەکەت</div><div id="heard">—</div></div>
-<div class="box"><div class="label">وەڵامی شەمعون</div><div id="answer">سڵاو! من شەمعونم. بە کوردی لەگەڵت قسە دەکەم.</div></div>
+  <h2>گەڕان لە داتا</h2>
 
-<input id="key" type="password" placeholder="OpenAI API Key">
-<small>
-بۆ وەڵامی AI ـی ڕاستەقینە بە کوردی، API Key پێویستە. Key ـەکەت تەنها لەم براوزەرەدا بەکاردهێنرێت و لە کۆدەکەدا دانانرێت.
-</small>
-</main>
+  <input id="name" type="text" placeholder="ناو...">
+
+  <input id="year" type="number" placeholder="ساڵ...">
+
+  <button onclick="search()">گەڕان</button>
+
+  <div id="results"></div>
+
+</div>
 
 <script>
-const talk=document.getElementById("talk");
-const statusEl=document.getElementById("status");
-const heard=document.getElementById("heard");
-const answer=document.getElementById("answer");
-const key=document.getElementById("key");
 
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-
-function speakKu(text){
-  if(!("speechSynthesis" in window)){
-    statusEl.textContent="براوزەرەکەت دەنگدانەوەی دەنگ پشتگیری ناکات.";
-    return;
+const data = [
+  {
+    name: "ئەوین محمد",
+    year: 2007,
+    gender: "Female"
+  },
+  {
+    name: "ئەوین محمد",
+    year: 1999,
+    gender: "Male"
   }
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="ku-Arab";
-  u.rate=.9;
-  u.pitch=1;
-  const voices=speechSynthesis.getVoices();
-  const v=voices.find(x=>/ku|kur/i.test((x.lang+" "+x.name)));
-  if(v) u.voice=v;
-  u.onstart=()=>statusEl.textContent="🔊 شەمعون وەڵامەکە دەخوێنێتەوە...";
-  u.onend=()=>statusEl.textContent="ئامادەم بۆ پرسیاری داهاتووت.";
-  speechSynthesis.speak(u);
-}
+];
 
-async function askAI(userText){
-  const k=key.value.trim();
-  if(!k) return "تکایە API Key ـەکەت لە خانەی خوارەوە بنووسە، پاشان دووبارە قسە بکە.";
+function search() {
 
-  const r=await fetch("https://api.openai.com/v1/responses",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "Authorization":"Bearer "+k
-    },
-    body:JSON.stringify({
-      model:"gpt-6-luna",
-      instructions:
-        "تۆ شەمعونیت، یاریدەدەری زیرەکی دەستکردی کوردی. "+
-        "هەموو وەڵامەکانت بە کوردیی سۆرانیی پاک، ڕوون، سروشتی و ڕێک وپێک بن. "+
-        "بە عەرەبی یان ئینگلیزی وەڵام مەدە، مەگەر بەکارهێنەر خۆی داوای زمانێکی تر بکات. "+
-        "وشەی بیانی تەنها کاتێک بەکاربهێنە کە ناوی تایبەتی یان وشەی تەکنیکی بێت.",
-      input:userText
-    })
+  const name =
+    document.getElementById("name")
+      .value
+      .trim()
+      .toLowerCase();
+
+  const year =
+    document.getElementById("year").value;
+
+  const results =
+    document.getElementById("results");
+
+  const found = data.filter(item => {
+
+    const nameOK =
+      !name ||
+      item.name.toLowerCase().includes(name);
+
+    const yearOK =
+      !year ||
+      String(item.year) === String(year);
+
+    return nameOK && yearOK;
   });
 
-  if(!r.ok){
-    let msg="";
-    try{msg=(await r.json()).error?.message||""}catch(e){}
-    throw new Error(msg||"API error");
+  if (!found.length) {
+    results.innerHTML =
+      "<div class='card'>هیچ ئەنجامێک نەدۆزرایەوە.</div>";
+    return;
   }
 
-  const d=await r.json();
-  return d.output_text || "ببورە، نەتوانیم وەڵامێکی دروست ئامادە بکەم.";
+  results.innerHTML = found.map(item => `
+    <div class="card">
+      <b>ناو:</b> ${item.name}<br>
+      <b>ساڵ:</b> ${item.year}<br>
+      <b>ڕەگەز:</b> ${item.gender}
+    </div>
+  `).join("");
 }
 
-if(!SR){
-  talk.disabled=true;
-  statusEl.textContent="ئەم براوزەرە ناسینەوەی دەنگ پشتگیری ناکات. Chrome تاقی بکەرەوە.";
-}else{
-  const rec=new SR();
-  rec.lang="ku-Arab";
-  rec.continuous=false;
-  rec.interimResults=false;
-
-  rec.onstart=()=>{
-    talk.classList.add("listen");
-    talk.textContent="🛑 گوێم لێتە...";
-    statusEl.textContent="ئێستا بە کوردی قسە بکە.";
-  };
-
-  rec.onresult=async e=>{
-    const text=e.results[0][0].transcript;
-    heard.textContent=text;
-    statusEl.textContent="🧠 شەمعون وەڵامەکە ئامادە دەکات...";
-    try{
-      const a=await askAI(text);
-      answer.textContent=a;
-      speakKu(a);
-    }catch(err){
-      const a="ببورە، پەیوەندی بە AI نەکرا. API Key و ئینتەرنێت بپشکنە.";
-      answer.textContent=a;
-      speakKu(a);
-      statusEl.textContent="هەڵەی پەیوەندی بە AI.";
-    }
-  };
-
-  rec.onerror=e=>{
-    statusEl.textContent="نەتوانرا دەنگ وەربگیرێت: "+e.error;
-  };
-  rec.onend=()=>{
-    talk.classList.remove("listen");
-    talk.textContent="🎙️ قسە لەگەڵ شەمعون بکە";
-  };
-  talk.onclick=()=>{try{rec.start()}catch(e){}};
-}
 </script>
+
 </body>
 </html>
