@@ -1,101 +1,102 @@
 <!DOCTYPE html>
 <html lang="ku">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>گەڕانی داتا</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>گەڕان لە داتا</title>
 
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #0d1117;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      direction: rtl;
-    }
-
-    .container {
-      max-width: 700px;
-      margin: auto;
-    }
-
-    h2 {
-      text-align: center;
-    }
-
-    input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 14px;
-      margin: 7px 0;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      background: #161b22;
-      color: white;
-      font-size: 16px;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 8px;
-      border: none;
-      border-radius: 8px;
-      background: #238636;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 10px;
-      padding: 15px;
-      margin-top: 12px;
-    }
-  </style>
+<style>
+body{
+  margin:0;
+  padding:20px;
+  background:#0d1117;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  direction:rtl;
+}
+.container{
+  max-width:700px;
+  margin:auto;
+}
+h2{text-align:center}
+input{
+  width:100%;
+  box-sizing:border-box;
+  padding:14px;
+  margin:6px 0;
+  border:1px solid #30363d;
+  border-radius:8px;
+  background:#161b22;
+  color:#fff;
+  font-size:16px;
+}
+button{
+  width:100%;
+  padding:14px;
+  margin-top:8px;
+  border:0;
+  border-radius:8px;
+  background:#238636;
+  color:#fff;
+  font-size:16px;
+}
+.card{
+  background:#161b22;
+  border:1px solid #30363d;
+  border-radius:10px;
+  padding:15px;
+  margin-top:12px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <h2>گەڕان لە داتا</h2>
+<h2>گەڕان لە داتا</h2>
 
-  <input id="name" type="text" placeholder="ناو...">
+<input id="name" placeholder="ناو...">
+<input id="year" type="number" placeholder="ساڵی لەدایکبوون...">
 
-  <input id="year" type="number" placeholder="ساڵ...">
+<button onclick="search()">گەڕان</button>
 
-  <button onclick="search()">گەڕان</button>
-
-  <div id="results"></div>
+<div id="results"></div>
 
 </div>
 
 <script>
 
 const data = [
-  {
-    name: "ئەوین محمد",
-    year: 2007,
-    gender: "Female"
-  },
-  {
-    name: "ئەوین محمد",
-    year: 1999,
-    gender: "Male"
-  }
+
+  {name:"ئەوین محمد امین",year:1986,gender:"Female"},
+  {name:"اسماعیل محمد",year:1968,gender:"Male"},
+  {name:"ژوان ستار محمد",year:2004,gender:"Female"},
+  {name:"احمد عولا ابراهیم",year:1965,gender:"Male"},
+  {name:"احمد عولا احمد",year:1966,gender:"Male"},
+  {name:"احمد جمیل بریندار",year:1997,gender:"Male"},
+  {name:"احمد جمیل حسین",year:1981,gender:"Male"},
+  {name:"اسماعیل رسول",year:2008,gender:"Male"},
+  {name:"اسماعیل رسول ئەحمەد",year:1980,gender:"Male"},
+  {name:"حسن علی",year:2006,gender:"Male"},
+  {name:"حسن علی احمد",year:2001,gender:"Male"},
+  {name:"حسن علی احمد",year:1997,gender:"Male"},
+  {name:"حسن علی احمد",year:1993,gender:"Male"},
+  {name:"حسن علی احمد",year:1986,gender:"Male"},
+  {name:"حسن علی احمد",year:1976,gender:"Male"},
+  {name:"حسن علی احمد",year:1982,gender:"Male"},
+  {name:"حسن علی اسماعیل",year:2021,gender:"Male"},
+  {name:"حسن علی بابیر",year:1969,gender:"Male"},
+  {name:"حسن علی تمر",year:1997,gender:"Male"},
+  {name:"حسن علی جمو",year:1989,gender:"Male"}
+
 ];
 
-function search() {
+function search(){
 
   const name =
     document.getElementById("name")
-      .value
-      .trim()
-      .toLowerCase();
+    .value.trim().toLowerCase();
 
   const year =
     document.getElementById("year").value;
@@ -116,7 +117,7 @@ function search() {
     return nameOK && yearOK;
   });
 
-  if (!found.length) {
+  if(found.length === 0){
     results.innerHTML =
       "<div class='card'>هیچ ئەنجامێک نەدۆزرایەوە.</div>";
     return;
