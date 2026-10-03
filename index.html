@@ -682,6 +682,33 @@ function addPerson(){
         return;
     }
 
+    /* ناو و ژمارە هەریەکەیان بە جیاوازی دڵنیایی لە دوبارەبوونەوەی بۆ دەکرێت */
+    const normalizedNewName = normalizeName(name);
+
+    if(normalizedNewName){
+        const duplicateName = people.some(person =>
+            normalizeName(person.name) === normalizedNewName
+        );
+
+        if(duplicateName){
+            alert("ببورە، ئەم ناوە دوبارەیە. ناتوانیت هەڵی بگریت.");
+            return;
+        }
+    }
+
+    const normalizedNewPhone = normalizePhone(phone);
+
+    if(normalizedNewPhone){
+        const duplicatePhone = people.some(person =>
+            normalizePhone(person.phone) === normalizedNewPhone
+        );
+
+        if(duplicatePhone){
+            alert("ببورە، ئەم ژمارەی تەلەفونە دوبارەیە. ناتوانیت هەڵی بگریت.");
+            return;
+        }
+    }
+
 
     /*
         تەنها تۆمارێکی نوێ زیاد دەکەین.
