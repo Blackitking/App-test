@@ -1,372 +1,111 @@
 <!DOCTYPE html>
-<html lang="ku">
+<html lang="ku" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>گەڕانی ناوەکان</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>گەڕانی ناو</title>
 <style>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    color: #222;
-}
-
-.container {
-    max-width: 600px;
-    margin: auto;
-    padding: 25px 15px;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.search-box {
-    display: flex;
-    gap: 8px;
-}
-
-input {
-    flex: 1;
-    padding: 14px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    font-size: 16px;
-}
-
-button {
-    padding: 12px 18px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    background: #2563eb;
-    color: white;
-    font-size: 15px;
-}
-
-button:hover {
-    opacity: .9;
-}
-
-#results {
-    margin-top: 20px;
-}
-
-.person {
-    background: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
-}
-
-.empty {
-    text-align: center;
-    color: #777;
-    margin-top: 30px;
-}
-
-.admin-button {
-    display: block;
-    margin: 30px auto 0;
-    background: #333;
-}
-
-.admin {
-    display: none;
-    margin-top: 30px;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-}
-
-.admin h2 {
-    margin-top: 0;
-}
-
-.admin-list {
-    margin-top: 20px;
-}
-
-.admin-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.delete {
-    background: #dc2626;
-}
-
-.logout {
-    background: #555;
-}
+body{font-family:Arial,sans-serif;background:#f4f6f8;margin:0;padding:20px}
+.box{max-width:700px;margin:auto;background:#fff;padding:20px;border-radius:16px;box-shadow:0 4px 18px #0001}
+h1{text-align:center}input,textarea,button{width:100%;box-sizing:border-box;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #ccc;font-size:16px}
+button{background:#222;color:#fff;cursor:pointer}.admin{margin-top:25px;border-top:1px solid #ddd;padding-top:20px}
+.person{border:1px solid #ddd;border-radius:12px;padding:14px;margin:10px 0}.person-name{font-size:19px;font-weight:bold}
+.more-data{margin-top:8px;white-space:pre-wrap}.no-data{margin-top:8px;color:#777}.delete{background:#b42318}.empty{text-align:center;color:#777;padding:20px}
 </style>
 </head>
-
 <body>
-
-<div class="container">
-
-    <h1>گەڕانی ناوەکان</h1>
-
-    <div class="search-box">
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="ناو بنووسە..."
-            onkeydown="if(event.key==='Enter') searchNames()"
-        >
-
-        <button onclick="searchNames()">گەڕان</button>
-    </div>
-
-    <div id="results" class="empty">
-        بۆ پیشاندانی ناو، گەڕان بکە.
-    </div>
-
-    <button class="admin-button" onclick="openAdmin()">
-        Admin Panel
-    </button>
-
-    <div id="adminPanel" class="admin">
-
-        <h2>Admin Panel</h2>
-
-        <input
-            type="text"
-            id="newName"
-            placeholder="تەواوی داتای کەسەکە"
-        >
-
-        <br><br>
-
-        <button onclick="addName()">زیادکردن</button>
-
-        <button class="logout" onclick="logout()">
-            دەرچوون
-        </button>
-
-        <div id="adminList" class="admin-list"></div>
-
-    </div>
-
+<div class="box">
+<h1>گەڕانی ناو</h1>
+<input id="searchInput" placeholder="ناو بگەڕێ..." oninput="searchNames()">
+<div id="results"><div class="empty">بۆ پیشاندانی ناو، گەڕان بکە.</div></div>
+<div class="admin">
+<button onclick="openAdmin()">Admin Panel</button>
+<div id="adminPanel" style="display:none">
+<h2>Admin Panel</h2>
+<input id="newName" placeholder="تەواوی داتای کەسەکە">
+<textarea id="moreData" rows="5" placeholder="داتای زیاتر"></textarea>
+<input id="phoneData" placeholder="ژمارەی تەلەفون">
+<button onclick="addPerson()">زیادکردن</button>
+<h3>سێرچی ئەدمین</h3><input id="adminSearch" placeholder="ناو یان ژمارەی تەلەفون بگەڕێ..." oninput="adminSearchPeople()"><div id="adminList"></div>
+</div></div>
 </div>
-
 <script>
-
-/* ناوە سەرەتاییەکان */
-let names = JSON.parse(localStorage.getItem("names")) || [
-    "ئەوین محمد امین",
-    "اسماعیل محمد",
-    "ژوان ستار محمد",
-    "احمد عولا ابراهیم",
-    "احمد عولا احمد",
-    "احمد جمیل بریندار",
-    "احمد جمیل حسین",
-    "اسماعیل رسول",
-    "اسماعیل رسول ئەحمەد",
-    "حسن علی",
-    "حسن علی احمد",
-    "حسن علی احمد",
-    "حسن علی احمد",
-    "حسن علی احمد",
-    "حسن علی احمد",
-    "حسن علی احمد",
-    "حسن علی اسماعیل",
-    "حسن علی بابیر",
-    "حسن علی تمر",
-    "حسن علی جمو"
-];
-
-
-/* هەڵگرتنی ناوەکان */
-function saveNames() {
-    localStorage.setItem("names", JSON.stringify(names));
+const KEY="people";
+let people=[];
+try{
+ const saved=JSON.parse(localStorage.getItem(KEY)||"null");
+ if(Array.isArray(saved)) people=saved.map(x=>typeof x==="string"?{name:x,more:""}:{name:String(x.name||""),more:String(x.more||""),phone:String(x.phone||"")}).filter(x=>x.name.trim());
+}catch(e){}
+if(!people.length){
+ people=[
+  "ئەوین محمد امین","اسماعیل محمد","ژوان ستار محمد","احمد عولا ابراهیم","احمد عولا احمد",
+  "احمد جمیل بریندار","احمد جمیل حسین","اسماعیل رسول","اسماعیل رسول ئەحمەد","حسن علی",
+  "حسن علی احمد","حسن علی احمد","حسن علی احمد","حسن علی احمد","حسن علی احمد",
+  "حسن علی احمد","حسن علی اسماعیل","حسن علی بابیر","حسن علی تمر","حسن علی جمو"
+ ].map(name=>({name,more:"",phone:""}));
+ save();
 }
-
-
-/* گەڕانی ناوەکان */
-function searchNames() {
-
-    const input = document
-        .getElementById("searchInput")
-        .value
-        .trim()
-        .toLowerCase();
-
-    const results = document.getElementById("results");
-
-    /* ئەگەر هیچ شتێک نەنووسرابێت */
-    if (!input) {
-
-        results.innerHTML =
-            '<div class="empty">بۆ پیشاندانی ناو، گەڕان بکە.</div>';
-
-        return;
-    }
-
-    /* دابەشکردنی وشەکانی ناو */
-    const words = input.split(/\s+/);
-
-    const found = names.filter(name => {
-
-        const lowerName = name.toLowerCase();
-
-        return words.every(word =>
-            lowerName.includes(word)
-        );
-
-    });
-
-
-    /* ئەگەر هیچ ناوێک نەدۆزرایەوە */
-    if (found.length === 0) {
-
-        results.innerHTML =
-            '<div class="empty">هیچ ناوێک نەدۆزرایەوە.</div>';
-
-        return;
-    }
-
-
-    /* پیشاندانی ئەنجامەکان */
-    results.innerHTML = "";
-
-    found.forEach(name => {
-
-        const div = document.createElement("div");
-
-        div.className = "person";
-
-        div.textContent = name;
-
-        results.appendChild(div);
-
-    });
+function save(){localStorage.setItem(KEY,JSON.stringify(people))}
+function searchNames(){
+ const q=document.getElementById("searchInput").value.trim().toLowerCase(),r=document.getElementById("results");
+ if(!q){r.innerHTML='<div class="empty">بۆ پیشاندانی ناو، گەڕان بکە.</div>';return}
+ const words=q.split(/\s+/);
+ const found=people.filter(p=>{
+  const nameWords=p.name.trim().toLowerCase().split(/\s+/);
+  return words.every((w,i)=>nameWords[i]===w);
+ });
+ if(!found.length){r.innerHTML='<div class="empty">هیچ ناوێک نەدۆزرایەوە.</div>';return}
+ r.innerHTML="";
+ found.forEach(p=>{
+  const d=document.createElement("div");d.className="person";
+  const n=document.createElement("div");n.className="person-name";n.textContent=p.name;d.appendChild(n);
+  const m=document.createElement("div");m.className=p.more.trim()?"more-data":"no-data";m.textContent=p.more.trim()?p.more:"داتای زیاتر نەدۆزرایەوە";d.appendChild(m);
+  r.appendChild(d);
+ });
 }
-
-
-/* کردنەوەی Admin Panel */
-function openAdmin() {
-
-    const code = prompt("کۆدی Admin بنووسە:");
-
-    if (code !== "5624") {
-
-        alert("کۆدی Admin هەڵەیە.");
-
-        return;
-    }
-
-    document.getElementById("adminPanel").style.display = "block";
-
-    loadAdmin();
+function openAdmin(){
+ if(prompt("کۆدی Admin بنووسە:")!=="5624"){alert("کۆدی Admin هەڵەیە.");return}
+ document.getElementById("adminPanel").style.display="block";loadAdmin();
 }
-
-
-/* پیشاندانی ناوەکان لە Admin */
-function loadAdmin() {
-
-    const list = document.getElementById("adminList");
-
-    list.innerHTML = "";
-
-    names.forEach((name, index) => {
-
-        const div = document.createElement("div");
-
-        div.className = "admin-item";
-
-        div.innerHTML = `
-            <span>${escapeHTML(name)}</span>
-
-            <button
-                class="delete"
-                onclick="deleteName(${index})">
-                سڕینەوە
-            </button>
-        `;
-
-        list.appendChild(div);
-
-    });
+function addPerson(){
+ const name=document.getElementById("newName").value.trim(),more=document.getElementById("moreData").value.trim(),phone=document.getElementById("phoneData").value.trim();
+ if(!name){alert("تکایە ناوی کەسەکە بنووسە.");return}
+ people.push({name,more,phone});save();
+ document.getElementById("newName").value="";document.getElementById("moreData").value="";document.getElementById("phoneData").value="";
+ loadAdmin();searchNames();
 }
-
-
-/* زیادکردنی ناو */
-function addName() {
-
-    const input = document.getElementById("newName");
-
-    const name = input.value.trim();
-
-    if (!name) {
-
-        alert("تکایە ناو بنووسە.");
-
-        return;
-    }
-
-    names.push(name);
-
-    saveNames();
-
-    input.value = "";
-
-    loadAdmin();
-
-    alert("ناوەکە زیادکرا.");
+function adminSearchPeople(){
+ const q=document.getElementById("adminSearch").value.trim().toLowerCase();
+ const box=document.getElementById("adminList");
+ box.innerHTML="";
+ if(!q){loadAdmin();return;}
+ const found=people.filter(p=>
+   p.name.toLowerCase().includes(q) ||
+   String(p.phone||"").toLowerCase().includes(q)
+ );
+ renderAdmin(found);
 }
-
-
-/* سڕینەوەی ناو */
-function deleteName(index) {
-
-    if (!confirm("دڵنیایت لە سڕینەوەی ئەم ناوە؟")) {
-
-        return;
-    }
-
-    names.splice(index, 1);
-
-    saveNames();
-
-    loadAdmin();
+function renderAdmin(list){
+ const box=document.getElementById("adminList");
+ box.innerHTML="";
+ list.forEach(p=>{
+  const i=people.indexOf(p);
+  const d=document.createElement("div");d.className="person";
+  const n=document.createElement("div");n.className="person-name";n.textContent=p.name;d.appendChild(n);
+  if(p.phone){
+   const ph=document.createElement("div");ph.className="more-data";ph.textContent="ژمارەی تەلەفون: "+p.phone;d.appendChild(ph);
+  }
+  if(p.more){
+   const m=document.createElement("div");m.className="more-data";m.textContent=p.more;d.appendChild(m);
+  }
+  const b=document.createElement("button");b.className="delete";b.textContent="سڕینەوە";
+  b.onclick=()=>{if(confirm("دڵنیایت لە سڕینەوە؟")){people.splice(i,1);save();loadAdmin();searchNames()}};
+  d.appendChild(b);box.appendChild(d);
+ });
 }
-
-
-/* دەرچوون لە Admin */
-function logout() {
-
-    document.getElementById("adminPanel").style.display = "none";
-
+function loadAdmin(){
+ renderAdmin(people);
 }
-
-
-/* پاراستنی HTML */
-function escapeHTML(text) {
-
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
-
 </script>
-
 </body>
 </html>
