@@ -547,67 +547,40 @@ function showResults(found){
 
 
 /* گەڕان بە ناو */
+function normalizeName(value){
+    return String(value || "")
+        .toLowerCase()
+        .replace(/[ًٌٍَُِّْـ]/g, "")
+        .replace(/[يى]/g, "ی")
+        .replace(/[ك]/g, "ک")
+        .replace(/[ۀة]/g, "ە")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
 function searchNames(){
-
-    const input =
-        document
-        .getElementById("searchInput")
-        .value
-        .trim()
-        .toLowerCase();
-
+    const input = normalizeName(document.getElementById("searchInput").value);
 
     if(!input){
-
         document.getElementById("results").innerHTML =
             '<div class="empty">بۆ پیشاندانی ناو، گەڕان بکە.</div>';
-
         return;
     }
 
+    const words = input.split(/\s+/);
 
-    const words =
-        input.split(/\s+/);
+    const found = people.filter(person => {
+        const name = normalizeName(person.name);
+        const nameWords = name.split(/\s+/).filter(Boolean);
 
-
-    /*
-        هەر وشەی گەڕان دەبێت
-        لە سەرەتای وشەی هاوتای ناو بێت.
-        نموونە:
-        "ئەحمد عولا" → تەنها ناوەکانی
-        کە وشەی یەکەم ئەحمد و وشەی دووەم عولا بێت.
-    */
-    const found =
-        people.filter(person => {
-
-            const name =
-                String(person.name || "")
-                .trim()
-                .toLowerCase();
-
-            const nameWords =
-                name.split(/\s+/);
-
-            /*
-                گەڕان بە ناو:
-                وشەکانی سێرچ دەبێت لە سەرەتای وشەکانی ناو دەست پێ بکەن،
-                بەڵام نابێت ناچار بیت هەموو وشەکانی ناو بنووسیت.
-                نموونە: "ئەحمد عولا" دەگات بە "ئەحمد عولا ابراهیم".
-            */
-            return words.every((word,index) =>
-                nameWords[index] &&
-                nameWords[index].startsWith(word)
-            );
-
-        });
-
+        return words.every(word =>
+            nameWords.some(nameWord => nameWord.startsWith(word))
+        );
+    });
 
     showResults(found);
-
 }
 
-
-/* پاککردنەوەی ژمارە بۆ گەڕان */
 function normalizePhone(value){
 
     return String(value || "")
