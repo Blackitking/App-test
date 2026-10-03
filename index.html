@@ -118,44 +118,48 @@ button:hover {
 
 <div class="container">
 
-<h1>گەڕانی ناوەکان</h1>
+    <h1>گەڕانی ناوەکان</h1>
 
-<div class="search-box">
-    <input
-        type="text"
-        id="searchInput"
-        placeholder="ناو بنووسە..."
-        onkeydown="if(event.key==='Enter') searchNames()"
-    >
-    <button onclick="searchNames()">گەڕان</button>
-</div>
+    <div class="search-box">
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="ناو بنووسە..."
+            onkeydown="if(event.key==='Enter') searchNames()"
+        >
 
-<div id="results" class="empty">
-    بۆ پیشاندانی ناو، گەڕان بکە.
-</div>
+        <button onclick="searchNames()">گەڕان</button>
+    </div>
 
-<button class="admin-button" onclick="openAdmin()">
-    Admin Panel
-</button>
+    <div id="results" class="empty">
+        بۆ پیشاندانی ناو، گەڕان بکە.
+    </div>
 
-<div id="adminPanel" class="admin">
+    <button class="admin-button" onclick="openAdmin()">
+        Admin Panel
+    </button>
 
-    <h2>Admin Panel</h2>
+    <div id="adminPanel" class="admin">
 
-    <input
-        type="text"
-        id="newName"
-        placeholder="ناوی نوێ"
-    >
+        <h2>Admin Panel</h2>
 
-    <br><br>
+        <input
+            type="text"
+            id="newName"
+            placeholder="تەواوی داتای کەسەکە"
+        >
 
-    <button onclick="addName()">زیادکردن</button>
-    <button class="logout" onclick="logout()">دەرچوون</button>
+        <br><br>
 
-    <div id="adminList" class="admin-list"></div>
+        <button onclick="addName()">زیادکردن</button>
 
-</div>
+        <button class="logout" onclick="logout()">
+            دەرچوون
+        </button>
+
+        <div id="adminList" class="admin-list"></div>
+
+    </div>
 
 </div>
 
@@ -186,13 +190,13 @@ let names = JSON.parse(localStorage.getItem("names")) || [
 ];
 
 
-/* پاراستنی ناوەکان */
+/* هەڵگرتنی ناوەکان */
 function saveNames() {
     localStorage.setItem("names", JSON.stringify(names));
 }
 
 
-/* گەڕانی ناو */
+/* گەڕانی ناوەکان */
 function searchNames() {
 
     const input = document
@@ -203,12 +207,16 @@ function searchNames() {
 
     const results = document.getElementById("results");
 
+    /* ئەگەر هیچ شتێک نەنووسرابێت */
     if (!input) {
+
         results.innerHTML =
             '<div class="empty">بۆ پیشاندانی ناو، گەڕان بکە.</div>';
+
         return;
     }
 
+    /* دابەشکردنی وشەکانی ناو */
     const words = input.split(/\s+/);
 
     const found = names.filter(name => {
@@ -221,6 +229,8 @@ function searchNames() {
 
     });
 
+
+    /* ئەگەر هیچ ناوێک نەدۆزرایەوە */
     if (found.length === 0) {
 
         results.innerHTML =
@@ -229,6 +239,8 @@ function searchNames() {
         return;
     }
 
+
+    /* پیشاندانی ئەنجامەکان */
     results.innerHTML = "";
 
     found.forEach(name => {
@@ -245,13 +257,15 @@ function searchNames() {
 }
 
 
-/* چوونە ناو Admin */
+/* کردنەوەی Admin Panel */
 function openAdmin() {
 
     const code = prompt("کۆدی Admin بنووسە:");
 
     if (code !== "5624") {
+
         alert("کۆدی Admin هەڵەیە.");
+
         return;
     }
 
@@ -261,7 +275,7 @@ function openAdmin() {
 }
 
 
-/* پیشاندانی ناوەکان بۆ Admin */
+/* پیشاندانی ناوەکان لە Admin */
 function loadAdmin() {
 
     const list = document.getElementById("adminList");
@@ -276,7 +290,10 @@ function loadAdmin() {
 
         div.innerHTML = `
             <span>${escapeHTML(name)}</span>
-            <button class="delete" onclick="deleteName(${index})">
+
+            <button
+                class="delete"
+                onclick="deleteName(${index})">
                 سڕینەوە
             </button>
         `;
@@ -295,7 +312,9 @@ function addName() {
     const name = input.value.trim();
 
     if (!name) {
+
         alert("تکایە ناو بنووسە.");
+
         return;
     }
 
@@ -311,10 +330,11 @@ function addName() {
 }
 
 
-/* سڕینەوە */
+/* سڕینەوەی ناو */
 function deleteName(index) {
 
     if (!confirm("دڵنیایت لە سڕینەوەی ئەم ناوە؟")) {
+
         return;
     }
 
