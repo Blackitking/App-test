@@ -42,7 +42,8 @@ h1{
  padding:20px;box-shadow:0 25px 70px rgba(0,0,0,.30);
  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)
 }
-.search-box{display:flex;gap:9px}
+.search-box{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.search-box input{min-width:0}.search-box button{min-width:0}
 input,textarea,button{
  width:100%;border-radius:15px;padding:14px 16px;
  font:inherit;font-size:16px;outline:none;transition:.2s
@@ -100,6 +101,7 @@ textarea{min-height:120px;resize:vertical}
 .delete{background:linear-gradient(135deg,#a8173d,var(--red));margin-top:10px}
 .logout{background:#303b59;margin-top:10px}
 @media(max-width:560px){
+ .search-box{grid-template-columns:1fr}
  .container{padding:14px 10px 40px}.search-card,.admin{padding:15px;border-radius:21px}
  .search-box{flex-direction:column}.hero{padding-top:16px}
 }
@@ -117,7 +119,9 @@ textarea{min-height:120px;resize:vertical}
 <div class="search-card">
  <div class="search-box">
   <input type="text" id="searchInput" placeholder="ناو بنووسە..." onkeydown="if(event.key==='Enter')searchNames()">
-  <button onclick="searchNames()">گەڕان</button>
+ <input type="tel" id="phoneSearchInput" placeholder="ژمارەی تەلەفون..." onkeydown="if(event.key==='Enter')searchPhone()">
+  <button onclick="searchNames()">گەڕانی ناو</button>
+  <button onclick="searchPhone()">گەڕانی ژمارە</button>
  </div>
  <div id="results" class="empty">بۆ پیشاندانی ناو، گەڕان بکە.</div>
 </div>
@@ -135,6 +139,10 @@ textarea{min-height:120px;resize:vertical}
  <div class="admin-field">
   <label>داتای زیاتر</label>
   <textarea id="moreData" placeholder="داتای زیاتر بنووسە..."></textarea>
+ </div>
+ <div class="admin-field">
+  <label>ژمارەی تەلەفون</label>
+  <input type="tel" id="phoneData" placeholder="ژمارەی تەلەفون">
  </div>
 
  <button onclick="addPerson()">زیادکردن</button>
@@ -180,6 +188,30 @@ function searchNames(){
  });
 }
 
+function searchPhone(){
+ const input=document.getElementById("phoneSearchInput").value.trim().toLowerCase();
+ const results=document.getElementById("results");
+ if(!input){
+  results.innerHTML='<div class="empty">ژمارەی تەلەفون بنووسە.</div>';
+  return;
+ }
+ const found=people.filter(person=>String(person.phone||"").toLowerCase().includes(input));
+ if(!found.length){
+  results.innerHTML='<div class="empty">هیچ ژمارەیەک نەدۆزرایەوە.</div>';
+  return;
+ }
+ results.innerHTML="";
+ found.forEach(person=>{
+  const div=document.createElement("div");div.className="person";
+  const name=document.createElement("div");name.className="person-name";name.textContent=person.name;div.appendChild(name);
+  const phone=document.createElement("div");phone.className="more-data";phone.textContent="ژمارەی تەلەفون: "+person.phone;div.appendChild(phone);
+  if(person.more&&person.more.trim()){
+   const more=document.createElement("div");more.className="more-data";more.textContent=person.more;div.appendChild(more);
+  }
+  results.appendChild(div);
+ });
+}
+
 function openAdmin(){
  const code=prompt("کۆدی Admin بنووسە:");
  if(code!=="5624"){alert("کۆدی Admin هەڵەیە.");return;}
@@ -188,9 +220,10 @@ function openAdmin(){
 function addPerson(){
  const name=document.getElementById("newName").value.trim();
  const more=document.getElementById("moreData").value.trim();
+ const phone=document.getElementById("phoneData").value.trim();
  if(!name){alert("تکایە ناوی کەسەکە بنووسە.");return;}
- people.push({name:name,more:more});savePeople();
- document.getElementById("newName").value="";document.getElementById("moreData").value="";
+ people.push({name:name,more:more,phone:phone});savePeople();
+ document.getElementById("newName").value="";document.getElementById("moreData").value="";document.getElementById("phoneData").value="";
  loadAdmin();alert("تۆمارەکە زیادکرا.");
 }
 function loadAdmin(){
@@ -199,6 +232,12 @@ function loadAdmin(){
   const item=document.createElement("div");item.className="admin-item";
   const name=document.createElement("div");name.className="admin-name";name.textContent=person.name;item.appendChild(name);
   const data=document.createElement("div");data.className="admin-data";data.textContent=person.more?person.more:"داتای زیاتر نییە";item.appendChild(data);
+  if(person.phone){
+   const phone=document.createElement("div");
+   phone.className="admin-data";
+   phone.textContent="ژمارەی تەلەفون: "+person.phone;
+   item.appendChild(phone);
+  }
   const del=document.createElement("button");del.className="delete";del.textContent="سڕینەوە";del.onclick=()=>deletePerson(index);item.appendChild(del);
   list.appendChild(item);
  });
